@@ -1,0 +1,182 @@
+﻿<process name="Currency_Dispatcher" version="1.0" bpversion="7.5.1.18099" cpeversion="10.0.136.0" narrative="Reads the excel file and bulk loads it into the queue" byrefcollection="true" processrunningmessage="" disableversioning="false" preferredid="837c9f4e-c3db-4625-ae78-0b9017b558e3">
+  <view>
+    <camerax>54</camerax>
+    <cameray>240</cameray>
+    <zoom version="2">1.5625</zoom>
+  </view>
+  <preconditions />
+  <endpoint narrative="" />
+  <stage stageid="23fce454-3c5a-431e-9999-d480d48b8555" name="Start" type="Start">
+    <display x="15" y="-135" />
+    <onsuccess>3e6f3664-6dca-4114-803b-ceb647e82e41</onsuccess>
+  </stage>
+  <stage stageid="754d2cbb-774c-43b5-9216-06d1259abe10" name="End" type="End">
+    <display x="15" y="300" />
+  </stage>
+  <stage stageid="050bbff3-8c3d-455e-98bd-61b686ffe7ae" name="Stage1" type="ProcessInfo">
+    <display x="-195" y="-105" w="150" h="90" />
+  </stage>
+  <stage stageid="3e6f3664-6dca-4114-803b-ceb647e82e41" name="Get Web Credentials" type="Action">
+    <loginhibit onsuccess="true" />
+    <narrative>Get the specified set of credentials.
+
+An Exception will occur if access to the credentials is not allowed, based on the running Resource, Process and User.</narrative>
+    <display x="15" y="-75" />
+    <inputs>
+      <input type="text" name="Credentials Name" friendlyname="Credentials Name" narrative="The name of the credentials to get" expr="&quot;CurrencyWeb_Creds&quot;" />
+    </inputs>
+    <outputs>
+      <output type="password" name="Password" friendlyname="Password" narrative="The password" stage="password" />
+      <output type="text" name="Username" friendlyname="Username" narrative="The user name" stage="username" />
+      <output type="date" name="Expiry Date" friendlyname="Expiry Date" narrative="The expiry date" stage="" />
+      <output type="text" name="Status" friendlyname="Status" narrative="The status" stage="" />
+    </outputs>
+    <onsuccess>bf40ba93-b955-484a-b067-99f15a9a2eee</onsuccess>
+    <resource object="Blueprism.Automate.clsCredentialsActions" action="Get" />
+  </stage>
+  <stage stageid="a3c85cb4-19af-4f2c-9192-168b4b5d4377" name="username" type="Data">
+    <display x="240" y="-105" />
+    <datatype>text</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="34a580ce-2c99-4c4c-bcff-8a6e0a46fd67" name="password" type="Data">
+    <display x="240" y="-60" />
+    <datatype>password</datatype>
+    <initialvalueenc>
+    </initialvalueenc>
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="34a75ad3-8fd9-49be-a01e-dedc08bff9c7" name="Web Credentials" type="Note">
+    <narrative>Get the username and password to store in the data items</narrative>
+    <display x="-195" y="15" />
+  </stage>
+  <stage stageid="bf40ba93-b955-484a-b067-99f15a9a2eee" name="Create Instance" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="15" y="-15" />
+    <inputs>
+      <input type="flag" name="Enable Events" friendlyname="Enable Events" narrative="Flag to indicate that events should be enabled / disabled on the attached instance - defaulted to True" expr="" />
+    </inputs>
+    <outputs>
+      <output type="number" name="handle" friendlyname="handle" narrative="An integer which can be used to identify the created instance in subsequent actions" stage="handle" />
+    </outputs>
+    <onsuccess>17478a8c-d90d-48ed-a9bb-e0e8b05053e1</onsuccess>
+    <resource object="MS Excel VBO - Extended" action="Create Instance" />
+  </stage>
+  <stage stageid="512cd859-29e9-4f57-a9c5-826110b63c47" name="handle" type="Data">
+    <display x="240" y="-15" />
+    <datatype>number</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="17478a8c-d90d-48ed-a9bb-e0e8b05053e1" name="Open Workbook " type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="15" y="45" />
+    <inputs>
+      <input type="number" name="handle" friendlyname="handle" narrative="The integer handle identifying the instance on which the required workbook should be opened. The default of zero indicates the currently active instance." expr="[handle]" />
+      <input type="text" name="File name" friendlyname="File name" narrative="The path and name of the file which should be opened." expr="&quot;C:\Users\nandh\Downloads\Currency_Data.xlsx&quot;" />
+    </inputs>
+    <outputs>
+      <output type="text" name="Workbook Name" friendlyname="Workbook Name" narrative="The name used by Excel to identify the workbook - usually this is the file name (without the path)." stage="Workbook Name" />
+    </outputs>
+    <onsuccess>a05b37bf-3a0a-4534-b242-3b84e032a7ac</onsuccess>
+    <resource object="MS Excel VBO - Extended" action="Open Workbook" />
+  </stage>
+  <stage stageid="6db5a4e1-d7c7-45aa-9057-153bc19dee15" name="Workbook Name" type="Data">
+    <display x="300" y="-105" />
+    <datatype>text</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="a05b37bf-3a0a-4534-b242-3b84e032a7ac" name="Read Data" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="15" y="90" />
+    <inputs>
+      <input type="number" name="handle" friendlyname="handle" narrative="The integer handle identifying the instance on which the worksheet which should be retrieved resides. The default of zero indicates the currently active instance." expr="[handle]" />
+      <input type="text" name="Workbook Name" friendlyname="Workbook Name" narrative="The name of the workbook which contains the sheet required. The default empty text indicates the currently active workbook on the specified instance." expr="[Workbook Name]" />
+      <input type="text" name="Worksheet Name" friendlyname="Worksheet Name" narrative="The name of the worksheet within the specified workbook which should be written to a collection. The default empty text indicates the currently active worksheet within the specified workbook." expr="&quot;Currency Converter Test&quot;" />
+    </inputs>
+    <outputs>
+      <output type="collection" name="Data" friendlyname="Data" narrative="The collection containing the data from the specified worksheet - the column IDs will be gleaned from the first row on the sheet being retrieved." stage="Data_Coll" />
+    </outputs>
+    <onsuccess>71997505-ccc9-41e5-91a7-716902beb0ea</onsuccess>
+    <resource object="MS Excel VBO - Extended" action="Get Worksheet As Collection" />
+  </stage>
+  <stage stageid="850139bc-5627-4976-82c1-e6d82419cb0b" name="Data_Coll" type="Collection">
+    <display x="285" y="45" w="90" h="60" />
+    <datatype>collection</datatype>
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="71997505-ccc9-41e5-91a7-716902beb0ea" name="Close Excel" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="15" y="135" />
+    <inputs>
+      <input type="number" name="handle" friendlyname="handle" narrative="The integer handle identifying the instance on which the workbook which should be closed resides. The default of zero indicates the currently active instance." expr="[handle]" />
+      <input type="text" name="Workbook Name" friendlyname="Workbook Name" narrative="The name of the workbook which should be closed." expr="[Workbook Name]" />
+      <input type="flag" name="Save Data" friendlyname="Save Data" narrative="True to save the data before closing the workbook; The default of False will discard any changes before closing the workbook." expr="False" />
+    </inputs>
+    <onsuccess>8b31972a-d282-47e2-acb4-6b431dce9bb4</onsuccess>
+    <resource object="MS Excel VBO - Extended" action="Close Workbook" />
+  </stage>
+  <stage stageid="651c4681-c1b8-4f4d-ba81-a4cce6d000ad" name="Item IDs" type="Collection">
+    <display x="285" y="105" w="90" h="60" />
+    <datatype>collection</datatype>
+    <private />
+    <alwaysinit />
+    <collectioninfo>
+      <field name="Item ID" type="text" description="The Item ID of the work queue item" displayname="Item IDs" />
+    </collectioninfo>
+  </stage>
+  <stage stageid="b8630f2b-2eeb-4192-beeb-78adbc6f5058" name="Row_Index" type="Data">
+    <loginhibit onsuccess="true" />
+    <display x="300" y="-15" />
+    <datatype>number</datatype>
+    <initialvalue>2</initialvalue>
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="53ced0b0-96c7-403c-b3d9-d64ac8bf9fad" name="close instance" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="15" y="240" />
+    <inputs>
+      <input type="number" name="handle" friendlyname="handle" narrative="The integer handle identifying the instance to be closed. Zero indicates the currently active instance." expr="[handle]" />
+      <input type="flag" name="Save Changes" friendlyname="Save Changes" narrative="True to save the changes to the open workbooks on the instance, False to discard any changes. Default is False." expr="False" />
+    </inputs>
+    <onsuccess>754d2cbb-774c-43b5-9216-06d1259abe10</onsuccess>
+    <resource object="MS Excel VBO - Extended" action="Close Instance" />
+  </stage>
+  <stage stageid="8b31972a-d282-47e2-acb4-6b431dce9bb4" name="Work Queues::Add To Queue" type="Action">
+    <loginhibit onsuccess="true" />
+    <narrative>The Data collection contains the items to be added to the queue. The collection may contain single or multiple rows, with each representing an item to be added.
+
+If there is a failure during the process, the queue will be unchanged - i.e. no rows will be loaded even if the error occurred on the last one.
+
+If Defer Until is specified, the items will not be available to be worked until then. Otherwise, they are available immediately.
+
+If the queue has a key field defined, an item added has key data longer than the maximum permitted 255 characters, an error will occur</narrative>
+    <display x="15" y="195" />
+    <inputs>
+      <input type="text" name="Queue Name" friendlyname="Queue Name" narrative="The name of the queue to add items to" expr="&quot;CurrencyQueue&quot;" />
+      <input type="collection" name="Data" friendlyname="Data" narrative="A collection containing the data, one row for each item to be added" expr="[Data_Coll]" />
+      <input type="datetime" name="Defer Until" friendlyname="Defer Until" narrative="Optionally, the date/time the new item(s) should be deferred until" expr="" />
+      <input type="number" name="Priority" friendlyname="Priority" narrative="Optionally, the priority for the new item(s). Lower numbers represent higher priorities. The default is 0." expr="" />
+      <input type="text" name="Tags" friendlyname="Tags" narrative="Optionally, a semi-colon-separated set of tags to apply to the queue item(s)" expr="" />
+      <input type="text" name="Status" friendlyname="Status" narrative="Optionally, the initial status required of the work queue item(s) " expr="" />
+      <input type="number" name="Batch Size" friendlyname="Batch Size" narrative="Optionally, the batch size to use when adding many items to the queue.  A Value of 0 will process all items in one batch.  An empty field will use the default batch size of 1000." expr="">
+        <validator type="BluePrism.AutomateProcessCore.RangeParameterValidation" parameter="0:25000" />
+      </input>
+      <input type="timespan" name="SLA" friendlyname="SLA" narrative="Optionally, the SLA that specifies the agreed-upon response or resolution time for the item(s), indicating the maximum acceptable duration for processing them based on their criticality or urgency.&#xD;&#xA;SLA values are provided as a timespan with a minimum value of 1 second and a maximum value of 999 days, 23 hours, 59 minutes, and 59 seconds.&#xD;&#xA;There is no default value for SLA if one is not provided." expr="" />
+      <input type="datetime" name="SLA Deadline" friendlyname="SLA Deadline" narrative="Optionally, the SLA Deadline specifies the agreed-upon response or resolution time for the item(s),&#xD;&#xA;indicating an explicitly set date for addressing them based on their criticality or urgency.&#xD;&#xA;SLA Deadline values are provided as a DateTime which must be less than 1000 days in the future.&#xD;&#xA;There is no default value for SLA Deadline if one is not provided. This value will override any&#xD;&#xA;value provided in the SLA input." expr="" />
+    </inputs>
+    <outputs>
+      <output type="collection" name="Item IDs" friendlyname="Item IDs" narrative="The IDs of the items which have been added to the queue, in the order of the collection of data passed that was input" stage="Item IDs" />
+    </outputs>
+    <onsuccess>53ced0b0-96c7-403c-b3d9-d64ac8bf9fad</onsuccess>
+    <resource object="Blueprism.Automate.clsWorkQueuesActions" action="Add To Queue" />
+  </stage>
+</process>
